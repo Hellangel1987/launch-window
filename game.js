@@ -173,6 +173,8 @@ const els = {
   endStats: document.getElementById("endStats"),
   newRunBtn: document.getElementById("newRunBtn"),
   playAgainBtn: document.getElementById("playAgainBtn"),
+  copySummaryBtn: document.getElementById("copySummaryBtn"),
+  shareHint: document.getElementById("shareHint"),
 };
 
 function randItem(list) {
@@ -319,6 +321,36 @@ function getEndingSummary() {
   };
 }
 
+function getShareSummary() {
+  return `I just scored ${state.score} in Launch Window with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that? ${window.location.href}`;
+}
+
+async function copyRunSummary() {
+  if (!state.over) return;
+
+  const summary = getShareSummary();
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(summary);
+    } else {
+      const helper = document.createElement("textarea");
+      helper.value = summary;
+      helper.setAttribute("readonly", "");
+      helper.style.position = "absolute";
+      helper.style.left = "-9999px";
+      document.body.appendChild(helper);
+      helper.select();
+      document.execCommand("copy");
+      helper.remove();
+    }
+
+    els.shareHint.textContent = "Run summary copied. Paste it anywhere to challenge a friend.";
+  } catch (error) {
+    els.shareHint.textContent = "Copy failed. You can still share your score manually.";
+  }
+}
+
 function finishGame(title, text) {
   state.over = true;
   render();
@@ -332,6 +364,7 @@ function finishGame(title, text) {
     `<span class="tag">Cash left: ${formatCash(state.cash)}</span>`,
     `<span class="tag">Launches: ${state.launches}</span>`,
   ].join("");
+  els.shareHint.textContent = "";
   els.gameOverCard.classList.remove("hidden");
 }
 
@@ -438,5 +471,6 @@ function render() {
 
 els.newRunBtn.addEventListener("click", initGame);
 els.playAgainBtn.addEventListener("click", initGame);
+els.copySummaryBtn.addEventListener("click", copyRunSummary);
 
 initGame();
