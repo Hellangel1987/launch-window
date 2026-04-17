@@ -393,10 +393,15 @@ function getMarketTemperatureLabel() {
 
 function renderActions() {
   els.mainActions.innerHTML = "";
+  const projection = getLaunchProjection(state);
+
   actions.forEach((action) => {
     const btn = document.createElement("button");
     btn.className = `action-btn ${action.type}`;
-    btn.innerHTML = `<strong>${action.title}</strong><small>${action.desc}</small>`;
+    const desc = action.key === "launch"
+      ? `Launch for about ${projection.expectedUsers} users and ${projection.expectedScore} score`
+      : action.desc;
+    btn.innerHTML = `<strong>${action.title}</strong><small>${desc}</small>`;
     btn.disabled = state.over;
     btn.addEventListener("click", () => onAction(action.key));
     els.mainActions.appendChild(btn);
