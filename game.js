@@ -73,6 +73,7 @@ const actions = [
     key: "build",
     title: "Build features",
     type: "good",
+    cost: 2,
     desc: "+28 build, -$2k, slight hype",
     effect: (state) => {
       state.build += 28;
@@ -85,6 +86,7 @@ const actions = [
     key: "polish",
     title: "Polish UX",
     type: "good",
+    cost: 1,
     desc: "+18 build, +quality, -$1k",
     effect: (state) => {
       state.build += 18;
@@ -97,6 +99,7 @@ const actions = [
     key: "campaign",
     title: "Run a hype campaign",
     type: "good",
+    cost: 3,
     desc: "+16 hype, -$3k, small build",
     effect: (state) => {
       state.hype += 16;
@@ -109,6 +112,7 @@ const actions = [
     key: "discount",
     title: "Offer founder pricing",
     type: "risky",
+    cost: 0,
     desc: "+10 hype, +users later, score multiplier down",
     effect: (state) => {
       state.hype += 10;
@@ -121,6 +125,7 @@ const actions = [
     key: "launch",
     title: "Launch now",
     type: "good",
+    cost: 0,
     desc: "Convert build + hype into users and score",
     effect: (state) => doLaunch(state),
   },
@@ -128,6 +133,7 @@ const actions = [
     key: "pivot",
     title: "Micro pivot",
     type: "risky",
+    cost: 2,
     desc: "Random market swing, can help or hurt",
     effect: (state) => {
       const swing = Math.floor(Math.random() * 25) - 8;
@@ -334,8 +340,8 @@ function onAction(actionKey) {
   const action = actions.find((item) => item.key === actionKey);
   if (!action) return;
 
-  if (actionKey !== "launch" && state.cash <= 1) {
-    addLog("Too risky", "You need to launch or conserve cash. There is not enough runway for that move.");
+  if (state.cash < action.cost) {
+    addLog("Too risky", `You need $${action.cost}k runway for that move. Launch now or protect your cash.`);
     return;
   }
 
@@ -398,11 +404,11 @@ function renderActions() {
   actions.forEach((action) => {
     const btn = document.createElement("button");
     btn.className = `action-btn ${action.type}`;
-    const isCashLocked = action.key !== "launch" && state.cash <= 1;
+    const isCashLocked = state.cash < action.cost;
     const desc = action.key === "launch"
       ? `Launch for about ${projection.expectedUsers} users and ${projection.expectedScore} score`
       : isCashLocked
-        ? "Not enough runway left. Launch now or protect your cash."
+        ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
         : action.desc;
     btn.innerHTML = `<strong>${action.title}</strong><small>${desc}</small>`;
     btn.disabled = state.over || isCashLocked;
