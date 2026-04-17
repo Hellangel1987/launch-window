@@ -225,6 +225,14 @@ function addLog(title, text) {
   els.log.prepend(entry);
 }
 
+function getLaunchVerdict(current) {
+  const buildRatio = current.build / current.product.targetBuild;
+
+  if (buildRatio >= 1) return "Clean launch";
+  if (buildRatio >= 0.7) return "Scrappy launch";
+  return "Risky launch";
+}
+
 function getLaunchProjection(current) {
   const buildRatio = Math.min(1.2, current.build / current.product.targetBuild);
   const fit = getMarketFit();
@@ -237,6 +245,7 @@ function getLaunchProjection(current) {
     buildRatio,
     expectedUsers,
     expectedScore,
+    verdict: getLaunchVerdict(current),
   };
 }
 
@@ -253,8 +262,7 @@ function doLaunch(current) {
   current.launches += 1;
   current.launchedToday = true;
 
-  const verdict = projection.buildRatio >= 1 ? "Clean launch" : projection.buildRatio >= 0.7 ? "Scrappy launch" : "Risky launch";
-  return `${verdict}. +${usersGained} users, +${scoreGain} score. ${current.discount ? "Founder pricing helped conversion." : "Full-price sales held up."}`;
+  return `${projection.verdict}. +${usersGained} users, +${scoreGain} score. ${current.discount ? "Founder pricing helped conversion." : "Full-price sales held up."}`;
 }
 
 function advanceDay() {
@@ -429,7 +437,7 @@ function getReadinessText() {
     readinessText = "<strong>Launch readiness:</strong> Early. You still need more product before launch will convert well.";
   }
 
-  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: about ${projection.expectedUsers} users and ${projection.expectedScore} score.</span>`;
+  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.</span>`;
 }
 
 function getMarketTemperatureLabel() {
@@ -451,7 +459,7 @@ function renderActions() {
     btn.className = `action-btn ${action.type}`;
     const isCashLocked = state.cash < action.cost;
     const desc = action.key === "launch"
-      ? `Launch for about ${projection.expectedUsers} users and ${projection.expectedScore} score`
+      ? `${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score.`
       : isCashLocked
         ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
         : action.desc;
