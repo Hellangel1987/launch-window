@@ -371,6 +371,16 @@ function getReadinessText() {
   return "<strong>Launch readiness:</strong> Mixed. The ingredients are coming together, but timing still matters.";
 }
 
+function getMarketTemperatureLabel() {
+  const fit = getMarketFit();
+
+  if (state.discount) return "Discount live";
+  if (fit >= 28) return "Hot market";
+  if (fit >= 18) return "Matched market";
+  if (fit >= 8) return "Niche market";
+  return "Cold market";
+}
+
 function renderActions() {
   els.mainActions.innerHTML = "";
   actions.forEach((action) => {
@@ -389,7 +399,7 @@ function render() {
   els.hypeStat.textContent = state.hype;
   els.usersStat.textContent = state.users;
   els.scoreStat.textContent = state.score;
-  els.difficultyPill.textContent = state.discount ? "Discount live" : "Warm market";
+  els.difficultyPill.textContent = getMarketTemperatureLabel();
   els.trendPill.textContent = state.trend.label;
   els.trendText.textContent = state.trend.name;
   els.moodText.textContent = state.trend.mood;
