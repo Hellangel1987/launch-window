@@ -153,6 +153,7 @@ const els = {
   productCard: document.getElementById("productCard"),
   buildLabel: document.getElementById("buildLabel"),
   buildBar: document.getElementById("buildBar"),
+  readinessBox: document.getElementById("readinessBox"),
   mainActions: document.getElementById("mainActions"),
   trendPill: document.getElementById("trendPill"),
   trendText: document.getElementById("trendText"),
@@ -321,6 +322,25 @@ function renderProduct() {
   `;
 }
 
+function getReadinessText() {
+  const buildRatio = state.build / state.product.targetBuild;
+  const fit = getMarketFit();
+
+  if (buildRatio >= 1 && state.hype >= 20) {
+    return "<strong>Launch readiness:</strong> Hot. You have enough product and buzz to push for a strong release.";
+  }
+
+  if (buildRatio >= 0.75 && fit >= 20) {
+    return "<strong>Launch readiness:</strong> Promising. You could launch now, but one more setup day may pay off.";
+  }
+
+  if (buildRatio < 0.5) {
+    return "<strong>Launch readiness:</strong> Early. You still need more product before launch will convert well.";
+  }
+
+  return "<strong>Launch readiness:</strong> Mixed. The ingredients are coming together, but timing still matters.";
+}
+
 function renderActions() {
   els.mainActions.innerHTML = "";
   actions.forEach((action) => {
@@ -347,6 +367,7 @@ function render() {
   els.tipBox.textContent = state.trend.tip;
   els.buildLabel.textContent = `${Math.round(state.build)} / ${state.product.targetBuild}`;
   els.buildBar.style.width = `${Math.min(100, (state.build / state.product.targetBuild) * 100)}%`;
+  els.readinessBox.innerHTML = getReadinessText();
   renderProduct();
   renderActions();
 }

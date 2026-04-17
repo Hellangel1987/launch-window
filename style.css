@@ -124,6 +124,17 @@ h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.3rem); }
 }
 
 .progress-block { margin-top: 1rem; }
+.readiness {
+  margin-top: 0.85rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #dfe6ff;
+}
+.readiness strong {
+  color: white;
+}
 .progress-labels {
   display: flex;
   justify-content: space-between;
