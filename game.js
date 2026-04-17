@@ -331,6 +331,16 @@ async function copyRunSummary() {
   const summary = getShareSummary();
 
   try {
+    if (navigator.share) {
+      await navigator.share({
+        title: "Launch Window",
+        text: `I just scored ${state.score} in Launch Window with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that?`,
+        url: window.location.href,
+      });
+      els.shareHint.textContent = "Run summary shared. See if anyone can beat your score.";
+      return;
+    }
+
     if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(summary);
     } else {
@@ -347,7 +357,9 @@ async function copyRunSummary() {
 
     els.shareHint.textContent = "Run summary copied. Paste it anywhere to challenge a friend.";
   } catch (error) {
-    els.shareHint.textContent = "Copy failed. You can still share your score manually.";
+    els.shareHint.textContent = error?.name === "AbortError"
+      ? "Share cancelled. You can still copy your score anytime."
+      : "Share failed. You can still copy your score manually.";
   }
 }
 
