@@ -217,12 +217,24 @@ function addLog(title, text) {
   els.log.prepend(entry);
 }
 
-function doLaunch(current) {
+function getLaunchProjection(current) {
   const buildRatio = Math.min(1.2, current.build / current.product.targetBuild);
   const fit = getMarketFit();
   const qualityBonus = Math.floor(current.quality * 0.8);
   const launchPower = Math.round((current.product.launchBase + current.hype + qualityBonus + fit) * buildRatio * current.pricePower);
-  const usersGained = Math.max(12, launchPower + Math.floor(Math.random() * 18) - 6);
+  const expectedUsers = Math.max(12, launchPower + 3);
+  const expectedScore = Math.max(20, Math.round(expectedUsers * (1 + current.launches * 0.25)));
+
+  return {
+    buildRatio,
+    expectedUsers,
+    expectedScore,
+  };
+}
+
+function doLaunch(current) {
+  const projection = getLaunchProjection(current);
+  const usersGained = Math.max(12, projection.expectedUsers + Math.floor(Math.random() * 18) - 9);
   const scoreGain = Math.max(20, Math.round(usersGained * (1 + current.launches * 0.25)));
 
   current.users += usersGained;
@@ -233,7 +245,7 @@ function doLaunch(current) {
   current.launches += 1;
   current.launchedToday = true;
 
-  const verdict = buildRatio >= 1 ? "Clean launch" : buildRatio >= 0.7 ? "Scrappy launch" : "Risky launch";
+  const verdict = projection.buildRatio >= 1 ? "Clean launch" : projection.buildRatio >= 0.7 ? "Scrappy launch" : "Risky launch";
   return `${verdict}. +${usersGained} users, +${scoreGain} score. ${current.discount ? "Founder pricing helped conversion." : "Full-price sales held up."}`;
 }
 
@@ -355,20 +367,18 @@ function renderProduct() {
 function getReadinessText() {
   const buildRatio = state.build / state.product.targetBuild;
   const fit = getMarketFit();
+  const projection = getLaunchProjection(state);
+  let readinessText = "<strong>Launch readiness:</strong> Mixed. The ingredients are coming together, but timing still matters.";
 
   if (buildRatio >= 1 && state.hype >= 20) {
-    return "<strong>Launch readiness:</strong> Hot. You have enough product and buzz to push for a strong release.";
+    readinessText = "<strong>Launch readiness:</strong> Hot. You have enough product and buzz to push for a strong release.";
+  } else if (buildRatio >= 0.75 && fit >= 20) {
+    readinessText = "<strong>Launch readiness:</strong> Promising. You could launch now, but one more setup day may pay off.";
+  } else if (buildRatio < 0.5) {
+    readinessText = "<strong>Launch readiness:</strong> Early. You still need more product before launch will convert well.";
   }
 
-  if (buildRatio >= 0.75 && fit >= 20) {
-    return "<strong>Launch readiness:</strong> Promising. You could launch now, but one more setup day may pay off.";
-  }
-
-  if (buildRatio < 0.5) {
-    return "<strong>Launch readiness:</strong> Early. You still need more product before launch will convert well.";
-  }
-
-  return "<strong>Launch readiness:</strong> Mixed. The ingredients are coming together, but timing still matters.";
+  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: about ${projection.expectedUsers} users and ${projection.expectedScore} score.</span>`;
 }
 
 function getMarketTemperatureLabel() {
