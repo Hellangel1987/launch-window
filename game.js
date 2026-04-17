@@ -398,11 +398,14 @@ function renderActions() {
   actions.forEach((action) => {
     const btn = document.createElement("button");
     btn.className = `action-btn ${action.type}`;
+    const isCashLocked = action.key !== "launch" && state.cash <= 1;
     const desc = action.key === "launch"
       ? `Launch for about ${projection.expectedUsers} users and ${projection.expectedScore} score`
-      : action.desc;
+      : isCashLocked
+        ? "Not enough runway left. Launch now or protect your cash."
+        : action.desc;
     btn.innerHTML = `<strong>${action.title}</strong><small>${desc}</small>`;
-    btn.disabled = state.over;
+    btn.disabled = state.over || isCashLocked;
     btn.addEventListener("click", () => onAction(action.key));
     els.mainActions.appendChild(btn);
   });
