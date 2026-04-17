@@ -273,12 +273,42 @@ function getEndingText() {
   return "You shipped, learned, and survived. In startup terms, that still counts.";
 }
 
+function getEndingSummary() {
+  if (state.score >= 420) {
+    return {
+      label: "Outcome: breakout week",
+      note: "You timed the market well. Keep momentum and relaunch fast while the audience is still warm.",
+    };
+  }
+
+  if (state.score >= 280) {
+    return {
+      label: "Outcome: strong signal",
+      note: "The pitch worked. One more polish day or sharper pricing could turn this into a bigger hit.",
+    };
+  }
+
+  if (state.score >= 170) {
+    return {
+      label: "Outcome: early traction",
+      note: "There is a real audience here. Tighten the build and launch a little closer to full readiness next time.",
+    };
+  }
+
+  return {
+    label: "Outcome: useful rehearsal",
+    note: "The market lesson matters. Build faster, protect runway, and avoid launching without enough product.",
+  };
+}
+
 function finishGame(title, text) {
   state.over = true;
   render();
+  const summary = getEndingSummary();
   els.gameOverTitle.textContent = title;
-  els.gameOverText.textContent = text;
+  els.gameOverText.textContent = `${text} ${summary.note}`;
   els.endStats.innerHTML = [
+    `<span class="tag">${summary.label}</span>`,
     `<span class="tag">Final score: ${state.score}</span>`,
     `<span class="tag">Users: ${state.users}</span>`,
     `<span class="tag">Cash left: ${formatCash(state.cash)}</span>`,
