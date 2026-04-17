@@ -1,88 +1,136 @@
 # Launch Window
 
-A tiny, fully static browser game MVP built for fast publishing on GitHub Pages or itch.io.
+A fast browser game about building hype, managing runway, and shipping at the right moment.
 
-## Concept
+**Play now:**
+- GitHub Pages: https://hellangel1987.github.io/launch-window/
+- itch.io: https://hellangel1987.itch.io/launch-window
 
-**Launch Window** is a 7-day score-run where the player tries to launch a small software product into a shifting market.
+## What it is
 
-Each day, you choose one move:
-- build features
-- polish UX
-- run hype
-- discount early
-- pivot a little
-- or launch now
+Launch Window is a tiny strategy score-run.
+You get **7 in-game days** to turn a small product idea into a successful launch.
 
-The goal is to balance runway, build progress, market fit, and hype to end the week with the best score.
+Each day you pick one move:
+- **Build features**
+- **Polish UX**
+- **Run a hype campaign**
+- **Offer founder pricing**
+- **Micro pivot**
+- **Launch now**
+
+The challenge is balancing:
+- product readiness
+- market fit
+- hype
+- cash runway
+- timing
+
+It is designed for quick runs, instant restarts, and one-more-try energy.
+
+## Why this game works
+
+- short sessions
+- easy to understand in seconds
+- replayable score chase
+- mobile-friendly
+- no install needed
+- fully static, no backend
+
+## Core loop
+
+1. Start a run with a random product concept
+2. Read the current market pulse
+3. Spend one move per day
+4. Launch when the numbers line up
+5. Try to beat your previous score
+
+## Controls
+
+- **Mouse / touch**: choose actions
+- **New Run**: restart instantly
+- **Play again**: jump straight into another run after game over
 
 ## Files
 
-- `index.html` - app shell and meta tags
-- `style.css` - responsive UI styling
-- `game.js` - all game logic, no dependencies
-- `cover.svg` - lightweight 1200x630 social/share image
+- `index.html` - app shell, SEO, metadata
+- `style.css` - responsive UI and layout
+- `game.js` - game systems and balancing
+- `cover.svg` - 1200x630 share image
+- `poster.svg` - vertical promo graphic for social/store use
+- `MARKETING.md` - store copy and launch messaging
+- `OPERATIONS.md` - maintenance and update notes
 
-## Run locally
+## Local development
 
-Because this is plain static HTML/CSS/JS, you can:
+Because this project is plain HTML/CSS/JS, there is no build step.
 
-1. Open `index.html` directly in a browser, or
-2. Serve the folder with a tiny static server
+### Quick run
 
-Example:
+Open `index.html` directly in a browser, or run a tiny local server:
 
 ```bash
-cd market-launch-game
 python3 -m http.server 8080
 ```
 
-Then open `http://localhost:8080`.
+Then visit:
 
-## Publish to GitHub Pages
-
-### Easiest option from this repo
-
-If this repo is published with Pages from the root or `/docs`, copy the folder contents to the publish target, or configure Pages to serve this folder via your existing workflow.
-
-Quick manual option:
-
-1. Keep `market-launch-game/` in the repo
-2. In GitHub, enable Pages with a workflow or branch setup
-3. Publish this folder with your preferred static workflow
-
-If you want the game to live at a clean path, publish it at:
-
-- `https://yourname.github.io/repo/market-launch-game/`
-
-No build step is required.
-
-## Publish to itch.io
-
-1. Zip the contents of `market-launch-game/` itself, not the parent folder
-2. Upload as an **HTML** project
-3. Enable **This file will be played in the browser**
-4. Suggested viewport: 1280x720 or responsive
-
-Example zip command:
-
-```bash
-cd market-launch-game
-zip -r launch-window-itch.zip .
+```text
+http://localhost:8080
 ```
 
-## Suggested store copy
+## Deploy
 
-**Title:** Launch Window
+### GitHub Pages
 
-**Short description:**
-Ship tiny products, catch market trends, and survive a 7-day startup sprint.
+This game is already deployed via GitHub Pages.
 
-**Tags:**
-strategy, management, score attack, startup, casual, browser game
+Primary URL:
+- https://hellangel1987.github.io/launch-window/
 
-## Notes
+### itch.io
 
-- Mobile-friendly layout included
-- No external assets or libraries
-- Social image uses inline-safe SVG and can be referenced directly as `cover.svg`
+This game is also published as a browser build on itch.io.
+
+Store URL:
+- https://hellangel1987.itch.io/launch-window
+
+## Store pitch
+
+**Short description**
+
+A fast browser game about building hype, surviving your runway, and launching at the perfect moment.
+
+**Long description**
+
+Launch Window is a compact strategy game where you have seven days to build, polish, promote, pivot, and ship a product into a moving market.
+
+Every run is a small launch story. Push too early and the product underdelivers. Wait too long and the runway disappears. Nail the timing and you can turn a tiny idea into a breakout score.
+
+## Current roadmap
+
+Short-term improvements:
+- stronger feedback and juice
+- better balancing between early and late launch choices
+- sharper end screen and replay hooks
+- additional micro-events and market variety
+- improved mobile feel
+
+Medium-term improvements:
+- daily challenge mode
+- more products and trend sets
+- sound effects and music layer
+- share-your-score flow
+
+## Project principles
+
+- keep it fast
+- keep it readable
+- keep it replayable
+- avoid unnecessary complexity
+- ship small improvements often
+
+## License
+
+Currently unpublished as a formal open-source license.
+Treat it as project-owned game code unless a dedicated license file is added.
