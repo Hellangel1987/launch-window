@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Launch Window | Ship fast, survive the week</title>
+  <meta name="description" content="A fast, mobile-friendly browser game about launching tiny products, timing hype, and surviving a 7-day market sprint." />
+  <meta property="og:title" content="Launch Window" />
+  <meta property="og:description" content="Ship tiny products, play your hype cards, and hit your score before the runway runs out." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="cover.svg" />
+  <meta name="theme-color" content="#0f1226" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero card">
+      <div>
+        <p class="eyebrow">market launch game</p>
+        <h1>Launch Window</h1>
+        <p class="lede">A tiny strategy score-run about building buzz, shipping fast, and not running out of runway.</p>
+      </div>
+      <button id="newRunBtn" class="primary">New Run</button>
+    </section>
+
+    <section class="dashboard">
+      <div class="stat card"><span>Day</span><strong id="dayStat">1 / 7</strong></div>
+      <div class="stat card"><span>Cash</span><strong id="cashStat">$12k</strong></div>
+      <div class="stat card"><span>Hype</span><strong id="hypeStat">0</strong></div>
+      <div class="stat card"><span>Users</span><strong id="usersStat">0</strong></div>
+      <div class="stat card highlight"><span>Score</span><strong id="scoreStat">0</strong></div>
+    </section>
+
+    <section class="grid">
+      <section class="card panel">
+        <div class="panel-head">
+          <h2>Current product</h2>
+          <span id="difficultyPill" class="pill">Warm market</span>
+        </div>
+        <div id="productCard" class="product-card"></div>
+        <div class="progress-block">
+          <div class="progress-labels">
+            <span>Build progress</span>
+            <span id="buildLabel">0 / 100</span>
+          </div>
+          <div class="progress-bar"><div id="buildBar"></div></div>
+        </div>
+        <div class="actions" id="mainActions"></div>
+      </section>
+
+      <section class="card panel">
+        <div class="panel-head">
+          <h2>Market pulse</h2>
+          <span class="pill alt" id="trendPill">Stable</span>
+        </div>
+        <div class="market-grid">
+          <div>
+            <span>Trend</span>
+            <strong id="trendText">AI assistants are hot</strong>
+          </div>
+          <div>
+            <span>Audience mood</span>
+            <strong id="moodText">Curious</strong>
+          </div>
+          <div>
+            <span>Tomorrow risk</span>
+            <strong id="riskText">Low refund pressure</strong>
+          </div>
+        </div>
+        <div class="tips" id="tipBox">Pick one move per day. Shipping early can beat perfection.</div>
+      </section>
+    </section>
+
+    <section class="card panel">
+      <div class="panel-head">
+        <h2>Run log</h2>
+        <span class="pill">OG pitch: “Ship fast, catch the wave.”</span>
+      </div>
+      <div id="log" class="log" aria-live="polite"></div>
+    </section>
+
+    <section id="gameOverCard" class="card panel game-over hidden">
+      <h2 id="gameOverTitle">Run complete</h2>
+      <p id="gameOverText"></p>
+      <div class="end-stats" id="endStats"></div>
+      <button id="playAgainBtn" class="primary">Play again</button>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

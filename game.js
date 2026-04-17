@@ -1,0 +1,357 @@
+const products = [
+  {
+    name: "PromptForge",
+    pitch: "An AI prompt pack generator for founders shipping late at night.",
+    audience: "solo founders",
+    tags: ["AI", "Templates", "B2B"],
+    targetBuild: 100,
+    launchBase: 35,
+  },
+  {
+    name: "GymStreak",
+    pitch: "A streak-first workout planner with zero fluff.",
+    audience: "fitness nerds",
+    tags: ["Health", "Mobile", "Habit"],
+    targetBuild: 110,
+    launchBase: 32,
+  },
+  {
+    name: "QuietCart",
+    pitch: "A distraction-free wishlist and price-drop tracker.",
+    audience: "deal hunters",
+    tags: ["Shopping", "Utility", "Consumer"],
+    targetBuild: 95,
+    launchBase: 38,
+  },
+  {
+    name: "ClipPilot",
+    pitch: "Turn long videos into punchy social clips in a minute.",
+    audience: "creators",
+    tags: ["Video", "Creator", "SaaS"],
+    targetBuild: 105,
+    launchBase: 36,
+  },
+];
+
+const trends = [
+  {
+    name: "AI assistants are hot",
+    mood: "Curious",
+    risk: "Low refund pressure",
+    boost: { AI: 16, Templates: 10, B2B: 6 },
+    tip: "If your product matches the trend, launching a bit early can snowball.",
+    label: "Stable",
+  },
+  {
+    name: "Creator tools are surging",
+    mood: "Ready to spend",
+    risk: "High copycat risk",
+    boost: { Video: 15, Creator: 15, SaaS: 8 },
+    tip: "Buzz matters here. Stack hype before launch for a bigger day-one pop.",
+    label: "Fast",
+  },
+  {
+    name: "Utility apps are back",
+    mood: "Practical",
+    risk: "Medium churn",
+    boost: { Utility: 14, Shopping: 10, Consumer: 7 },
+    tip: "Consistency wins. Cheap improvements beat flashy campaigns.",
+    label: "Steady",
+  },
+  {
+    name: "Habit products are trending",
+    mood: "Disciplined",
+    risk: "Reviewers are picky",
+    boost: { Health: 14, Habit: 14, Mobile: 9 },
+    tip: "Polish helps more than hype when the crowd is detail-oriented.",
+    label: "Demanding",
+  },
+];
+
+const actions = [
+  {
+    key: "build",
+    title: "Build features",
+    type: "good",
+    desc: "+28 build, -$2k, slight hype",
+    effect: (state) => {
+      state.build += 28;
+      state.cash -= 2;
+      state.hype += 4;
+      return "You shipped useful work. The roadmap got shorter and people noticed.";
+    },
+  },
+  {
+    key: "polish",
+    title: "Polish UX",
+    type: "good",
+    desc: "+18 build, +quality, -$1k",
+    effect: (state) => {
+      state.build += 18;
+      state.cash -= 1;
+      state.quality += 10;
+      return "Everything feels smoother. Fewer rough edges means happier early users.";
+    },
+  },
+  {
+    key: "campaign",
+    title: "Run a hype campaign",
+    type: "good",
+    desc: "+16 hype, -$3k, small build",
+    effect: (state) => {
+      state.hype += 16;
+      state.cash -= 3;
+      state.build += 6;
+      return "A sharp trailer and launch thread got shared around. The waitlist woke up.";
+    },
+  },
+  {
+    key: "discount",
+    title: "Offer founder pricing",
+    type: "risky",
+    desc: "+10 hype, +users later, score multiplier down",
+    effect: (state) => {
+      state.hype += 10;
+      state.discount = true;
+      state.pricePower -= 0.1;
+      return "Cheap entry pulled attention in, but margins got a little thinner.";
+    },
+  },
+  {
+    key: "launch",
+    title: "Launch now",
+    type: "good",
+    desc: "Convert build + hype into users and score",
+    effect: (state) => doLaunch(state),
+  },
+  {
+    key: "pivot",
+    title: "Micro pivot",
+    type: "risky",
+    desc: "Random market swing, can help or hurt",
+    effect: (state) => {
+      const swing = Math.floor(Math.random() * 25) - 8;
+      state.build += 8;
+      state.hype += 6;
+      state.cash -= 2;
+      state.marketBonus += swing;
+      const mood = swing >= 0 ? "The new angle clicked." : "The message got muddier than planned.";
+      return `${mood} Market fit changed by ${swing >= 0 ? "+" : ""}${swing}.`;
+    },
+  },
+];
+
+const state = {};
+
+const els = {
+  dayStat: document.getElementById("dayStat"),
+  cashStat: document.getElementById("cashStat"),
+  hypeStat: document.getElementById("hypeStat"),
+  usersStat: document.getElementById("usersStat"),
+  scoreStat: document.getElementById("scoreStat"),
+  difficultyPill: document.getElementById("difficultyPill"),
+  productCard: document.getElementById("productCard"),
+  buildLabel: document.getElementById("buildLabel"),
+  buildBar: document.getElementById("buildBar"),
+  mainActions: document.getElementById("mainActions"),
+  trendPill: document.getElementById("trendPill"),
+  trendText: document.getElementById("trendText"),
+  moodText: document.getElementById("moodText"),
+  riskText: document.getElementById("riskText"),
+  tipBox: document.getElementById("tipBox"),
+  log: document.getElementById("log"),
+  gameOverCard: document.getElementById("gameOverCard"),
+  gameOverTitle: document.getElementById("gameOverTitle"),
+  gameOverText: document.getElementById("gameOverText"),
+  endStats: document.getElementById("endStats"),
+  newRunBtn: document.getElementById("newRunBtn"),
+  playAgainBtn: document.getElementById("playAgainBtn"),
+};
+
+function randItem(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function initGame() {
+  const product = structuredClone(randItem(products));
+  const trend = structuredClone(randItem(trends));
+
+  Object.assign(state, {
+    day: 1,
+    maxDays: 7,
+    cash: 12,
+    hype: 0,
+    users: 0,
+    score: 0,
+    build: 0,
+    quality: 0,
+    launches: 0,
+    marketBonus: 0,
+    pricePower: 1,
+    discount: false,
+    launchedToday: false,
+    over: false,
+    product,
+    trend,
+  });
+
+  els.log.innerHTML = "";
+  els.gameOverCard.classList.add("hidden");
+  addLog("New run", `${product.name} is live on the roadmap. ${trend.name}. You have 7 days to make it matter.`);
+  render();
+}
+
+function formatCash(k) {
+  return `$${Math.max(0, k)}k`;
+}
+
+function getMarketFit() {
+  return state.product.tags.reduce((sum, tag) => sum + (state.trend.boost[tag] || 0), 0) + state.marketBonus;
+}
+
+function addLog(title, text) {
+  const entry = document.createElement("div");
+  entry.className = "log-entry";
+  entry.innerHTML = `<strong>${title}</strong><span>${text}</span>`;
+  els.log.prepend(entry);
+}
+
+function doLaunch(current) {
+  const buildRatio = Math.min(1.2, current.build / current.product.targetBuild);
+  const fit = getMarketFit();
+  const qualityBonus = Math.floor(current.quality * 0.8);
+  const launchPower = Math.round((current.product.launchBase + current.hype + qualityBonus + fit) * buildRatio * current.pricePower);
+  const usersGained = Math.max(12, launchPower + Math.floor(Math.random() * 18) - 6);
+  const scoreGain = Math.max(20, Math.round(usersGained * (1 + current.launches * 0.25)));
+
+  current.users += usersGained;
+  current.score += scoreGain;
+  current.cash += Math.max(2, Math.round(usersGained / 18));
+  current.hype = Math.max(0, Math.round(current.hype * 0.45));
+  current.build = Math.max(0, current.build - 35);
+  current.launches += 1;
+  current.launchedToday = true;
+
+  const verdict = buildRatio >= 1 ? "Clean launch" : buildRatio >= 0.7 ? "Scrappy launch" : "Risky launch";
+  return `${verdict}. +${usersGained} users, +${scoreGain} score. ${current.discount ? "Founder pricing helped conversion." : "Full-price sales held up."}`;
+}
+
+function advanceDay() {
+  if (state.over) return;
+
+  if (!state.launchedToday) {
+    state.hype = Math.max(0, state.hype - 2);
+  }
+
+  if (state.cash <= 0) {
+    state.cash = 0;
+    finishGame("Out of runway", "You ran out of cash before the market run ended. Good idea, brutal timing.");
+    return;
+  }
+
+  if (state.day >= state.maxDays) {
+    finishGame("Campaign complete", getEndingText());
+    return;
+  }
+
+  state.day += 1;
+  state.launchedToday = false;
+
+  if (Math.random() < 0.55) {
+    state.trend = structuredClone(randItem(trends));
+    addLog("Market shift", `${state.trend.name}. ${state.trend.tip}`);
+  }
+
+  render();
+}
+
+function getEndingText() {
+  if (state.score >= 420) return "You caught the wave. This feels like a real micro-hit, not a lucky prototype.";
+  if (state.score >= 280) return "Solid launch week. Not breakout territory, but absolutely worth another sprint.";
+  if (state.score >= 170) return "You found a little traction. With a second pass, this could become something.";
+  return "You shipped, learned, and survived. In startup terms, that still counts.";
+}
+
+function finishGame(title, text) {
+  state.over = true;
+  render();
+  els.gameOverTitle.textContent = title;
+  els.gameOverText.textContent = text;
+  els.endStats.innerHTML = [
+    `<span class="tag">Final score: ${state.score}</span>`,
+    `<span class="tag">Users: ${state.users}</span>`,
+    `<span class="tag">Cash left: ${formatCash(state.cash)}</span>`,
+    `<span class="tag">Launches: ${state.launches}</span>`,
+  ].join("");
+  els.gameOverCard.classList.remove("hidden");
+}
+
+function onAction(actionKey) {
+  if (state.over) return;
+  const action = actions.find((item) => item.key === actionKey);
+  if (!action) return;
+
+  if (actionKey !== "launch" && state.cash <= 1) {
+    addLog("Too risky", "You need to launch or conserve cash. There is not enough runway for that move.");
+    return;
+  }
+
+  const result = action.effect(state);
+  addLog(action.title, result);
+  clampState();
+  render();
+  advanceDay();
+}
+
+function clampState() {
+  state.cash = Math.max(0, state.cash);
+  state.hype = Math.max(0, state.hype);
+  state.build = Math.max(0, state.build);
+  state.quality = Math.max(0, state.quality);
+}
+
+function renderProduct() {
+  const fit = getMarketFit();
+  els.productCard.innerHTML = `
+    <h3>${state.product.name}</h3>
+    <p>${state.product.pitch}</p>
+    <p><strong>Audience:</strong> ${state.product.audience}</p>
+    <p><strong>Market fit:</strong> ${fit >= 0 ? "+" : ""}${fit}</p>
+    <div class="tag-row">${state.product.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+  `;
+}
+
+function renderActions() {
+  els.mainActions.innerHTML = "";
+  actions.forEach((action) => {
+    const btn = document.createElement("button");
+    btn.className = `action-btn ${action.type}`;
+    btn.innerHTML = `<strong>${action.title}</strong><small>${action.desc}</small>`;
+    btn.disabled = state.over;
+    btn.addEventListener("click", () => onAction(action.key));
+    els.mainActions.appendChild(btn);
+  });
+}
+
+function render() {
+  els.dayStat.textContent = `${state.day} / ${state.maxDays}`;
+  els.cashStat.textContent = formatCash(state.cash);
+  els.hypeStat.textContent = state.hype;
+  els.usersStat.textContent = state.users;
+  els.scoreStat.textContent = state.score;
+  els.difficultyPill.textContent = state.discount ? "Discount live" : "Warm market";
+  els.trendPill.textContent = state.trend.label;
+  els.trendText.textContent = state.trend.name;
+  els.moodText.textContent = state.trend.mood;
+  els.riskText.textContent = state.trend.risk;
+  els.tipBox.textContent = state.trend.tip;
+  els.buildLabel.textContent = `${Math.round(state.build)} / ${state.product.targetBuild}`;
+  els.buildBar.style.width = `${Math.min(100, (state.build / state.product.targetBuild) * 100)}%`;
+  renderProduct();
+  renderActions();
+}
+
+els.newRunBtn.addEventListener("click", initGame);
+els.playAgainBtn.addEventListener("click", initGame);
+
+initGame();
