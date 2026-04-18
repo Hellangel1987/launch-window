@@ -169,6 +169,7 @@ const els = {
   buildLabel: document.getElementById("buildLabel"),
   buildBar: document.getElementById("buildBar"),
   readinessBox: document.getElementById("readinessBox"),
+  daysLeftCard: document.getElementById("daysLeftStat").closest(".stat"),
   mainActions: document.getElementById("mainActions"),
   trendPill: document.getElementById("trendPill"),
   trendText: document.getElementById("trendText"),
@@ -662,8 +663,10 @@ function handleKeyboardShortcuts(event) {
 
 function render() {
   els.copySummaryBtn.disabled = !state.over;
+  const daysLeft = Math.max(0, state.maxDays - state.day);
+  const isClosingWindow = daysLeft <= 2 && !state.over;
   els.dayStat.textContent = `${state.day} / ${state.maxDays}`;
-  els.daysLeftStat.textContent = Math.max(0, state.maxDays - state.day);
+  els.daysLeftStat.textContent = daysLeft;
   els.cashStat.textContent = formatCash(state.cash);
   els.hypeStat.textContent = state.hype;
   els.usersStat.textContent = state.users;
@@ -678,6 +681,8 @@ function render() {
   els.buildLabel.textContent = `${Math.round(state.build)} / ${state.product.targetBuild}`;
   els.buildBar.style.width = `${Math.min(100, (state.build / state.product.targetBuild) * 100)}%`;
   els.readinessBox.innerHTML = getReadinessText();
+  els.readinessBox.classList.toggle("urgent", isClosingWindow);
+  els.daysLeftCard?.classList.toggle("urgent", isClosingWindow);
   renderProduct();
   renderActions();
 }
