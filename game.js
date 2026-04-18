@@ -475,7 +475,18 @@ function getReadinessText() {
     readinessText = "<strong>Launch readiness:</strong> Early. You still need more product before launch will convert well.";
   }
 
-  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.</span>`;
+  const bestDelta = state.bestScore - projection.expectedScore;
+  let bestHint = "";
+
+  if (state.bestScore > 0) {
+    if (bestDelta > 0) {
+      bestHint = ` Beat your best by finding about ${bestDelta} more score before you launch.`;
+    } else {
+      bestHint = " This pace can beat your best run if you ship cleanly.";
+    }
+  }
+
+  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${bestHint}</span>`;
 }
 
 function getMarketTemperatureLabel() {
