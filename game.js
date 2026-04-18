@@ -668,6 +668,11 @@ function handleKeyboardShortcuts(event) {
     return;
   }
 
+  if (state.over && (event.key === "s" || event.key === "S")) {
+    copyRunSummary();
+    return;
+  }
+
   if (state.over && event.key === "Enter") {
     initGame();
     return;
