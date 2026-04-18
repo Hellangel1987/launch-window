@@ -498,12 +498,13 @@ function getReadinessText() {
     timingHint = " Closing window. Plan for your last good launch moment now.";
   }
 
-  const bestDelta = state.bestScore - projection.expectedScore;
+  const projectedTotalScore = state.score + projection.expectedScore;
+  const bestDelta = state.bestScore - projectedTotalScore;
   let bestHint = "";
 
   if (state.bestScore > 0) {
     if (bestDelta > 0) {
-      bestHint = ` Beat your best by finding about ${bestDelta} more score before you launch.`;
+      bestHint = ` Beat your best by finding about ${bestDelta} more total score before you launch.`;
     } else {
       bestHint = " This pace can beat your best run if you ship cleanly.";
     }
