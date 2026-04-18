@@ -527,7 +527,17 @@ function renderActions() {
       : isCashLocked
         ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
         : action.desc;
-    btn.innerHTML = `<strong>${action.title} <span aria-hidden="true">(${shortcut})</span></strong><small>${desc}</small>`;
+    const costBadge = isCashLocked
+      ? `<span class="action-badge locked">Need $${action.cost}k</span>`
+      : `<span class="action-badge cost">${action.cost === 0 ? 'Free move' : `Costs $${action.cost}k`}</span>`;
+    const projectionBadge = action.key === "launch"
+      ? `<span class="action-badge launch">Now: ${projection.expectedScore} score</span>`
+      : '';
+    btn.innerHTML = `
+      <strong>${action.title} <span aria-hidden="true">(${shortcut})</span></strong>
+      <div class="action-meta">${costBadge}${projectionBadge}</div>
+      <small>${desc}</small>
+    `;
     btn.setAttribute("aria-keyshortcuts", String(shortcut));
     btn.disabled = state.over || isCashLocked;
     btn.addEventListener("click", () => onAction(action.key));

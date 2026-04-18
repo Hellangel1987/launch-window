@@ -184,6 +184,33 @@ h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.3rem); }
 }
 .action-btn small { color: var(--muted); }
 .action-btn strong { font-size: 1rem; }
+.action-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+.action-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.74rem;
+  line-height: 1;
+  background: rgba(255,255,255,0.08);
+  color: #e7ecff;
+}
+.action-badge.cost {
+  background: rgba(124, 156, 255, 0.18);
+}
+.action-badge.launch {
+  background: rgba(83, 224, 193, 0.15);
+  color: #d8fff6;
+}
+.action-badge.locked {
+  background: rgba(255, 118, 118, 0.16);
+  color: #ffd7d7;
+}
 .action-btn.good { outline: 1px solid rgba(83, 224, 193, 0.25); }
 .action-btn.risky { outline: 1px solid rgba(255, 118, 118, 0.22); }
 
