@@ -500,7 +500,15 @@ function getReadinessText() {
 
   const projectedTotalScore = state.score + projection.expectedScore;
   const bestDelta = state.bestScore - projectedTotalScore;
+  const buildNeeded = Math.max(0, Math.ceil(state.product.targetBuild - state.build));
+  let buildHint = "";
   let bestHint = "";
+
+  if (buildNeeded > 0) {
+    buildHint = ` You need about ${buildNeeded} more build for a clean launch.`;
+  } else {
+    buildHint = " You have enough product for a clean launch, so extra setup is optional.";
+  }
 
   if (state.bestScore > 0) {
     if (bestDelta > 0) {
@@ -514,7 +522,7 @@ function getReadinessText() {
     ? " Founder pricing is live, so this launch trades a little score power for easier conversion."
     : "";
 
-  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${timingHint}${pricingHint}${bestHint}</span>`;
+  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${buildHint}${timingHint}${pricingHint}${bestHint}</span>`;
 }
 
 function getMarketTemperatureLabel() {
