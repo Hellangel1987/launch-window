@@ -465,6 +465,7 @@ function getReadinessText() {
   const buildRatio = state.build / state.product.targetBuild;
   const fit = getMarketFit();
   const projection = getLaunchProjection(state);
+  const daysLeft = Math.max(0, state.maxDays - state.day);
   let readinessText = "<strong>Launch readiness:</strong> Mixed. The ingredients are coming together, but timing still matters.";
 
   if (buildRatio >= 1 && state.hype >= 20) {
@@ -473,6 +474,15 @@ function getReadinessText() {
     readinessText = "<strong>Launch readiness:</strong> Promising. You could launch now, but one more setup day may pay off.";
   } else if (buildRatio < 0.5) {
     readinessText = "<strong>Launch readiness:</strong> Early. You still need more product before launch will convert well.";
+  }
+
+  let timingHint = ` ${daysLeft} day${daysLeft === 1 ? "" : "s"} left after today, so you still have room to set up.`;
+  if (daysLeft === 0) {
+    timingHint = " Last day. This is your final shot to launch.";
+  } else if (daysLeft === 1) {
+    timingHint = " Final setup day. If you wait after this, the run ends.";
+  } else if (daysLeft === 2) {
+    timingHint = " Closing window. Plan for your last good launch moment now.";
   }
 
   const bestDelta = state.bestScore - projection.expectedScore;
@@ -486,7 +496,7 @@ function getReadinessText() {
     }
   }
 
-  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${bestHint}</span>`;
+  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${timingHint}${bestHint}</span>`;
 }
 
 function getMarketTemperatureLabel() {
