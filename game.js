@@ -164,6 +164,7 @@ const els = {
   usersStat: document.getElementById("usersStat"),
   scoreStat: document.getElementById("scoreStat"),
   launchNowStat: document.getElementById("launchNowStat"),
+  launchTotalStat: document.getElementById("launchTotalStat"),
   bestStat: document.getElementById("bestStat"),
   difficultyPill: document.getElementById("difficultyPill"),
   productCard: document.getElementById("productCard"),
@@ -700,6 +701,7 @@ function render() {
   els.scoreStat.textContent = state.score;
   const projection = getLaunchProjection(state);
   els.launchNowStat.textContent = `+${projection.expectedScore}`;
+  els.launchTotalStat.textContent = `${state.score + projection.expectedScore} total`;
   els.bestStat.textContent = state.bestScore;
   els.difficultyPill.textContent = getMarketTemperatureLabel();
   els.trendPill.textContent = state.trend.label;

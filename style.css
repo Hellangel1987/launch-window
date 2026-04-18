@@ -98,6 +98,10 @@ h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.3rem); }
 }
 .stat span { color: var(--muted); font-size: 0.85rem; }
 .stat strong { font-size: clamp(1.2rem, 3vw, 1.7rem); }
+.stat small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
 .stat.highlight { outline: 1px solid rgba(124, 156, 255, 0.4); }
 .stat.urgent {
   outline: 1px solid rgba(255, 118, 118, 0.45);
