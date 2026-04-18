@@ -357,6 +357,15 @@ function getShareSummary() {
   return `I just scored ${state.score} in Launch Window with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that? ${window.location.href}`;
 }
 
+async function updateShareButtonLabel() {
+  if (navigator.share) {
+    els.copySummaryBtn.textContent = "Share run summary";
+    return;
+  }
+
+  els.copySummaryBtn.textContent = "Copy run summary";
+}
+
 async function copyRunSummary() {
   if (!state.over) return;
 
@@ -547,4 +556,5 @@ els.playAgainBtn.addEventListener("click", initGame);
 els.copySummaryBtn.addEventListener("click", copyRunSummary);
 document.addEventListener("keydown", handleKeyboardShortcuts);
 
+updateShareButtonLabel();
 initGame();
