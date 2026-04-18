@@ -228,6 +228,7 @@ function initGame() {
     discount: false,
     launchedToday: false,
     over: false,
+    lastRunWasNewBest: false,
     product,
     trend,
     bestScore: getBestScore(),
@@ -390,7 +391,7 @@ function getShareSummary() {
 }
 
 async function updateShareButtonLabel() {
-  const labelPrefix = state.over && state.score > 0 ? (state.score >= state.bestScore ? "best run" : "run summary") : "run summary";
+  const labelPrefix = state.over && state.score > 0 && state.lastRunWasNewBest ? "best run" : "run summary";
 
   if (navigator.share) {
     els.copySummaryBtn.textContent = `Share ${labelPrefix}`;
@@ -447,6 +448,7 @@ function finishGame(title, text) {
   els.gameOverTitle.textContent = title;
   els.gameOverText.textContent = `${text} ${summary.note}`;
   const isNewBest = state.score > previousBest;
+  state.lastRunWasNewBest = isNewBest;
   const restartHint = isNewBest
     ? "New best. Press Enter or N to jump into the next run."
     : "Press Enter or N to jump into the next run.";
