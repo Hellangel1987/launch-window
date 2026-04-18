@@ -641,15 +641,19 @@ function renderActions() {
           ? `<span class="action-badge locked">Need $${action.cost}k</span>`
           : `<span class="action-badge cost">${action.cost === 0 ? 'Free move' : `Costs $${action.cost}k`}</span>`;
     const projectedTotalScore = state.score + projection.expectedScore;
+    const bestPaceDelta = projectedTotalScore - state.bestScore;
     const projectionBadge = action.key === "launch"
       ? `<span class="action-badge launch">Now: ${projection.expectedScore} score, ${projectedTotalScore} total</span>`
+      : '';
+    const bestPaceBadge = action.key === "launch" && state.bestScore > 0 && bestPaceDelta > 0
+      ? `<span class="action-badge best-pace">Best pace +${bestPaceDelta}</span>`
       : '';
     const recommendationBadge = recommendLaunch
       ? '<span class="action-badge recommended">Recommended</span>'
       : '';
     btn.innerHTML = `
       <strong>${action.title} <span aria-hidden="true">(${shortcut})</span></strong>
-      <div class="action-meta">${costBadge}${projectionBadge}${recommendationBadge}</div>
+      <div class="action-meta">${costBadge}${projectionBadge}${bestPaceBadge}${recommendationBadge}</div>
       <small>${desc}</small>
     `;
     btn.setAttribute("aria-keyshortcuts", String(shortcut));

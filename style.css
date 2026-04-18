@@ -239,6 +239,10 @@ h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.3rem); }
   background: rgba(255, 214, 102, 0.18);
   color: #ffe9ad;
 }
+.action-badge.best-pace {
+  background: rgba(162, 124, 255, 0.2);
+  color: #efe1ff;
+}
 .action-badge.locked {
   background: rgba(255, 118, 118, 0.16);
   color: #ffd7d7;
