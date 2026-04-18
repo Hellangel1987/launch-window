@@ -113,8 +113,12 @@ const actions = [
     title: "Offer founder pricing",
     type: "risky",
     cost: 0,
-    desc: "+10 hype, +users later, score multiplier down",
+    desc: "+10 hype once, +users later, score multiplier down",
     effect: (state) => {
+      if (state.discount) {
+        return "Founder pricing is already live. Use the attention you bought before cutting deeper.";
+      }
+
       state.hype += 10;
       state.discount = true;
       state.pricePower -= 0.1;
@@ -527,14 +531,19 @@ function renderActions() {
     btn.className = `action-btn ${action.type}`;
     const isCashLocked = state.cash < action.cost;
     const shortcut = index + 1;
+    const isDiscountActive = action.key === "discount" && state.discount;
     const desc = action.key === "launch"
       ? `${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score.`
+      : isDiscountActive
+        ? "Already active. Founder pricing is live for this run."
+        : isCashLocked
+          ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
+          : action.desc;
+    const costBadge = isDiscountActive
+      ? '<span class="action-badge launch">Active pricing</span>'
       : isCashLocked
-        ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
-        : action.desc;
-    const costBadge = isCashLocked
-      ? `<span class="action-badge locked">Need $${action.cost}k</span>`
-      : `<span class="action-badge cost">${action.cost === 0 ? 'Free move' : `Costs $${action.cost}k`}</span>`;
+        ? `<span class="action-badge locked">Need $${action.cost}k</span>`
+        : `<span class="action-badge cost">${action.cost === 0 ? 'Free move' : `Costs $${action.cost}k`}</span>`;
     const projectionBadge = action.key === "launch"
       ? `<span class="action-badge launch">Now: ${projection.expectedScore} score</span>`
       : '';
@@ -544,7 +553,7 @@ function renderActions() {
       <small>${desc}</small>
     `;
     btn.setAttribute("aria-keyshortcuts", String(shortcut));
-    btn.disabled = state.over || isCashLocked;
+    btn.disabled = state.over || isCashLocked || isDiscountActive;
     btn.addEventListener("click", () => onAction(action.key));
     els.mainActions.appendChild(btn);
   });
