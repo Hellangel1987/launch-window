@@ -597,8 +597,12 @@ function renderActions() {
         : daysLeft === 2
           ? "Closing window."
           : "";
+    const launchBuildGap = Math.max(0, Math.ceil(state.product.targetBuild - state.build));
+    const launchBuildNote = launchBuildGap > 0
+      ? `Needs about ${launchBuildGap} more build for a clean launch.`
+      : "Build target reached. Extra setup is optional.";
     const desc = action.key === "launch"
-      ? `${launchTimingNote ? `${launchTimingNote} ` : ""}${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score.`
+      ? `${launchTimingNote ? `${launchTimingNote} ` : ""}${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score. ${launchBuildNote}`
       : isDiscountActive
         ? "Already active. Founder pricing is live for this run."
         : isCashLocked
