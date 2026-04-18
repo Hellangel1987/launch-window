@@ -625,7 +625,7 @@ function renderActions() {
       : "Build target reached. Extra setup is optional.";
     const isLastDayLock = isFinalDay() && action.key !== "launch";
     const desc = action.key === "launch"
-      ? `${launchTimingNote ? `${launchTimingNote} ` : ""}${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score. ${launchBuildNote}`
+      ? `${launchTimingNote ? `${launchTimingNote} ` : ""}${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score. ${launchBuildNote}${state.discount ? " Founder pricing is live, so this run converts easier but scores a little lower." : ""}`
       : isLastDayLock
         ? "Last day. Setup moves are closed, so this run lives or dies on the launch."
         : isDiscountActive
@@ -711,8 +711,8 @@ function render() {
   const isNewBestPace = state.bestScore > 0 && projectedTotal > state.bestScore;
   const bestPaceDelta = projectedTotal - state.bestScore;
   els.launchTotalStat.textContent = isNewBestPace
-    ? `${projectedTotal} total, +${bestPaceDelta} vs best`
-    : `${projectedTotal} total`;
+    ? `${projectedTotal} total, +${bestPaceDelta} vs best${state.discount ? ", discount live" : ""}`
+    : `${projectedTotal} total${state.discount ? ", discount live" : ""}`;
   els.bestStat.textContent = state.bestScore;
   els.difficultyPill.textContent = getMarketTemperatureLabel();
   els.trendPill.textContent = state.trend.label;
