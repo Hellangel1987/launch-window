@@ -510,7 +510,11 @@ function getReadinessText() {
     }
   }
 
-  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${timingHint}${bestHint}</span>`;
+  const pricingHint = state.discount
+    ? " Founder pricing is live, so this launch trades a little score power for easier conversion."
+    : "";
+
+  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${timingHint}${pricingHint}${bestHint}</span>`;
 }
 
 function getMarketTemperatureLabel() {
