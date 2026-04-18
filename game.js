@@ -413,6 +413,9 @@ function finishGame(title, text) {
   els.gameOverTitle.textContent = title;
   els.gameOverText.textContent = `${text} ${summary.note}`;
   const isNewBest = state.score > previousBest;
+  const restartHint = isNewBest
+    ? "New best. Press Enter or N to jump into the next run."
+    : "Press Enter or N to jump into the next run.";
   els.endStats.innerHTML = [
     `<span class="tag">${summary.label}</span>`,
     `<span class="tag">Final score: ${state.score}</span>`,
@@ -422,7 +425,7 @@ function finishGame(title, text) {
     `<span class="tag">Cash left: ${formatCash(state.cash)}</span>`,
     `<span class="tag">Launches: ${state.launches}</span>`,
   ].join("");
-  els.shareHint.textContent = "";
+  els.shareHint.textContent = restartHint;
   els.gameOverCard.classList.remove("hidden");
 }
 
@@ -539,6 +542,11 @@ function handleKeyboardShortcuts(event) {
   if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT" || target?.isContentEditable) return;
 
   if (event.key === "n" || event.key === "N") {
+    initGame();
+    return;
+  }
+
+  if (state.over && event.key === "Enter") {
     initGame();
     return;
   }
