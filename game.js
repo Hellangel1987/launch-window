@@ -534,6 +534,7 @@ function isActionDisabled(action) {
 function renderActions() {
   els.mainActions.innerHTML = "";
   const projection = getLaunchProjection(state);
+  const daysLeft = Math.max(0, state.maxDays - state.day);
 
   actions.forEach((action, index) => {
     const btn = document.createElement("button");
@@ -541,8 +542,15 @@ function renderActions() {
     const isCashLocked = state.cash < action.cost;
     const shortcut = index + 1;
     const isDiscountActive = action.key === "discount" && state.discount;
+    const launchTimingNote = daysLeft === 0
+      ? "Final day."
+      : daysLeft === 1
+        ? "Final setup day."
+        : daysLeft === 2
+          ? "Closing window."
+          : "";
     const desc = action.key === "launch"
-      ? `${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score.`
+      ? `${launchTimingNote ? `${launchTimingNote} ` : ""}${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score.`
       : isDiscountActive
         ? "Already active. Founder pricing is live for this run."
         : isCashLocked
