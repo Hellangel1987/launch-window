@@ -508,7 +508,7 @@ function handleKeyboardShortcuts(event) {
   const tagName = target?.tagName;
   if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT" || target?.isContentEditable) return;
 
-  if ((event.key === "n" || event.key === "N") && !state.over) {
+  if (event.key === "n" || event.key === "N") {
     initGame();
     return;
   }
