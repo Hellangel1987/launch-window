@@ -522,6 +522,10 @@ function getMarketTemperatureLabel() {
   return "Cold market";
 }
 
+function isActionDisabled(action) {
+  return state.over || state.cash < action.cost || (action.key === "discount" && state.discount);
+}
+
 function renderActions() {
   els.mainActions.innerHTML = "";
   const projection = getLaunchProjection(state);
@@ -553,7 +557,7 @@ function renderActions() {
       <small>${desc}</small>
     `;
     btn.setAttribute("aria-keyshortcuts", String(shortcut));
-    btn.disabled = state.over || isCashLocked || isDiscountActive;
+    btn.disabled = isActionDisabled(action);
     btn.addEventListener("click", () => onAction(action.key));
     els.mainActions.appendChild(btn);
   });
@@ -580,7 +584,7 @@ function handleKeyboardShortcuts(event) {
   if (!Number.isInteger(actionIndex) || actionIndex < 0 || actionIndex >= actions.length) return;
 
   const action = actions[actionIndex];
-  if (!action || state.over || state.cash < action.cost) return;
+  if (!action || isActionDisabled(action)) return;
 
   onAction(action.key);
 }
