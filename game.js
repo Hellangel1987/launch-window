@@ -543,6 +543,7 @@ function getReadinessText() {
   const buildNeeded = Math.max(0, Math.ceil(state.product.targetBuild - state.build));
   let buildHint = "";
   let bestHint = "";
+  let runwayHint = "";
 
   if (buildNeeded > 0) {
     buildHint = ` You need about ${buildNeeded} more build for a clean launch.`;
@@ -558,11 +559,19 @@ function getReadinessText() {
     }
   }
 
+  if (state.cash <= 2 && !state.over) {
+    runwayHint = state.cash === 0
+      ? " Runway is gone, so only the current launch matters now."
+      : state.cash === 1
+        ? " Only $1k runway left, so most setup moves are off the table after today."
+        : " Only $2k runway left, so you have about one more paid setup move before you must launch or stall.";
+  }
+
   const pricingHint = state.discount
     ? " Founder pricing is live, so this launch trades a little score power for easier conversion."
     : "";
 
-  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${buildHint}${timingHint}${pricingHint}${bestHint}</span>`;
+  return `${readinessText}<br><span class="readiness-subtle">Projected launch right now: ${projection.verdict.toLowerCase()}, about ${projection.expectedUsers} users and ${projection.expectedScore} score.${buildHint}${timingHint}${runwayHint}${pricingHint}${bestHint}</span>`;
 }
 
 function getMarketTemperatureLabel() {
