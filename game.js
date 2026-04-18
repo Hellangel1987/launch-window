@@ -153,6 +153,7 @@ const state = {};
 
 const els = {
   dayStat: document.getElementById("dayStat"),
+  daysLeftStat: document.getElementById("daysLeftStat"),
   cashStat: document.getElementById("cashStat"),
   hypeStat: document.getElementById("hypeStat"),
   usersStat: document.getElementById("usersStat"),
@@ -562,6 +563,7 @@ function handleKeyboardShortcuts(event) {
 
 function render() {
   els.dayStat.textContent = `${state.day} / ${state.maxDays}`;
+  els.daysLeftStat.textContent = Math.max(0, state.maxDays - state.day);
   els.cashStat.textContent = formatCash(state.cash);
   els.hypeStat.textContent = state.hype;
   els.usersStat.textContent = state.users;
