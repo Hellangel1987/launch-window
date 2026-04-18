@@ -147,6 +147,8 @@ const actions = [
   },
 ];
 
+const BEST_SCORE_KEY = "launch-window-best-score";
+
 const state = {};
 
 const els = {
@@ -155,6 +157,7 @@ const els = {
   hypeStat: document.getElementById("hypeStat"),
   usersStat: document.getElementById("usersStat"),
   scoreStat: document.getElementById("scoreStat"),
+  bestStat: document.getElementById("bestStat"),
   difficultyPill: document.getElementById("difficultyPill"),
   productCard: document.getElementById("productCard"),
   buildLabel: document.getElementById("buildLabel"),
@@ -181,6 +184,26 @@ function randItem(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+function getBestScore() {
+  try {
+    return Math.max(0, Number(localStorage.getItem(BEST_SCORE_KEY)) || 0);
+  } catch {
+    return 0;
+  }
+}
+
+function setBestScore(score) {
+  const best = Math.max(getBestScore(), score);
+
+  try {
+    localStorage.setItem(BEST_SCORE_KEY, String(best));
+  } catch {
+    // ignore storage failures
+  }
+
+  return best;
+}
+
 function initGame() {
   const product = structuredClone(randItem(products));
   const trend = structuredClone(randItem(trends));
@@ -202,6 +225,7 @@ function initGame() {
     over: false,
     product,
     trend,
+    bestScore: getBestScore(),
   });
 
   els.log.innerHTML = "";
@@ -373,13 +397,18 @@ async function copyRunSummary() {
 
 function finishGame(title, text) {
   state.over = true;
+  const previousBest = getBestScore();
+  state.bestScore = setBestScore(state.score);
   render();
   const summary = getEndingSummary();
   els.gameOverTitle.textContent = title;
   els.gameOverText.textContent = `${text} ${summary.note}`;
+  const isNewBest = state.score > previousBest;
   els.endStats.innerHTML = [
     `<span class="tag">${summary.label}</span>`,
     `<span class="tag">Final score: ${state.score}</span>`,
+    `<span class="tag">Best score: ${state.bestScore}</span>`,
+    isNewBest ? `<span class="tag">New best run</span>` : "",
     `<span class="tag">Users: ${state.users}</span>`,
     `<span class="tag">Cash left: ${formatCash(state.cash)}</span>`,
     `<span class="tag">Launches: ${state.launches}</span>`,
@@ -476,6 +505,7 @@ function render() {
   els.hypeStat.textContent = state.hype;
   els.usersStat.textContent = state.users;
   els.scoreStat.textContent = state.score;
+  els.bestStat.textContent = state.bestScore;
   els.difficultyPill.textContent = getMarketTemperatureLabel();
   els.trendPill.textContent = state.trend.label;
   els.trendText.textContent = state.trend.name;
