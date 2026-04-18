@@ -569,6 +569,10 @@ function isActionDisabled(action) {
   return state.over || state.cash < action.cost || (action.key === "discount" && state.discount);
 }
 
+function shouldRecommendLaunch(projection, daysLeft) {
+  return daysLeft <= 1 || projection.buildRatio >= 1 || (projection.buildRatio >= 0.75 && getMarketFit() >= 20);
+}
+
 function renderActions() {
   els.mainActions.innerHTML = "";
   const projection = getLaunchProjection(state);
@@ -576,7 +580,8 @@ function renderActions() {
 
   actions.forEach((action, index) => {
     const btn = document.createElement("button");
-    btn.className = `action-btn ${action.type}`;
+    const recommendLaunch = action.key === "launch" && shouldRecommendLaunch(projection, daysLeft);
+    btn.className = `action-btn ${action.type}${recommendLaunch ? " recommended" : ""}`;
     const isCashLocked = state.cash < action.cost;
     const shortcut = index + 1;
     const isDiscountActive = action.key === "discount" && state.discount;
@@ -602,9 +607,12 @@ function renderActions() {
     const projectionBadge = action.key === "launch"
       ? `<span class="action-badge launch">Now: ${projection.expectedScore} score</span>`
       : '';
+    const recommendationBadge = recommendLaunch
+      ? '<span class="action-badge recommended">Recommended</span>'
+      : '';
     btn.innerHTML = `
       <strong>${action.title} <span aria-hidden="true">(${shortcut})</span></strong>
-      <div class="action-meta">${costBadge}${projectionBadge}</div>
+      <div class="action-meta">${costBadge}${projectionBadge}${recommendationBadge}</div>
       <small>${desc}</small>
     `;
     btn.setAttribute("aria-keyshortcuts", String(shortcut));
