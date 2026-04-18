@@ -652,7 +652,7 @@ function handleKeyboardShortcuts(event) {
   const tagName = target?.tagName;
   if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT" || target?.isContentEditable) return;
 
-  if (event.key === "n" || event.key === "N") {
+  if (event.key === "n" || event.key === "N" || event.key === "r" || event.key === "R") {
     initGame();
     return;
   }
