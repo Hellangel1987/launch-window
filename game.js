@@ -703,7 +703,12 @@ function render() {
   els.scoreStat.textContent = state.score;
   const projection = getLaunchProjection(state);
   els.launchNowStat.textContent = `+${projection.expectedScore}`;
-  els.launchTotalStat.textContent = `${state.score + projection.expectedScore} total`;
+  const projectedTotal = state.score + projection.expectedScore;
+  const isNewBestPace = state.bestScore > 0 && projectedTotal > state.bestScore;
+  const bestPaceDelta = projectedTotal - state.bestScore;
+  els.launchTotalStat.textContent = isNewBestPace
+    ? `${projectedTotal} total, +${bestPaceDelta} vs best`
+    : `${projectedTotal} total`;
   els.bestStat.textContent = state.bestScore;
   els.difficultyPill.textContent = getMarketTemperatureLabel();
   els.trendPill.textContent = state.trend.label;
