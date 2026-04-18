@@ -358,6 +358,33 @@ function getEndingSummary() {
   };
 }
 
+function getNextRunTip() {
+  const buildGap = Math.max(0, Math.ceil(state.product.targetBuild - state.build));
+  const fit = getMarketFit();
+
+  if (state.cash === 0) {
+    return "Next run tip: protect at least $2k so you can still buy one last build or pivot day.";
+  }
+
+  if (buildGap > 24) {
+    return `Next run tip: find about ${buildGap} more build before your main launch push.`;
+  }
+
+  if (state.hype < 16) {
+    return "Next run tip: stack a little more hype before launching so the release lands harder.";
+  }
+
+  if (fit < 12) {
+    return "Next run tip: wait for a better market match or use a pivot before you launch.";
+  }
+
+  if (state.discount) {
+    return "Next run tip: skip founder pricing unless you really need the extra attention.";
+  }
+
+  return "Next run tip: you were close, so launch while the build is clean and the market still matches.";
+}
+
 function getShareSummary() {
   return `I just scored ${state.score} in Launch Window with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that? ${window.location.href}`;
 }
@@ -431,6 +458,7 @@ function finishGame(title, text) {
     `<span class="tag">Users: ${state.users}</span>`,
     `<span class="tag">Cash left: ${formatCash(state.cash)}</span>`,
     `<span class="tag">Launches: ${state.launches}</span>`,
+    `<span class="tag">${getNextRunTip()}</span>`,
   ].join("");
   els.shareHint.textContent = isNewBest
     ? `${restartHint} Share it while the market is still hot.`
