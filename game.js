@@ -638,8 +638,9 @@ function renderActions() {
         : isCashLocked
           ? `<span class="action-badge locked">Need $${action.cost}k</span>`
           : `<span class="action-badge cost">${action.cost === 0 ? 'Free move' : `Costs $${action.cost}k`}</span>`;
+    const projectedTotalScore = state.score + projection.expectedScore;
     const projectionBadge = action.key === "launch"
-      ? `<span class="action-badge launch">Now: ${projection.expectedScore} score</span>`
+      ? `<span class="action-badge launch">Now: ${projection.expectedScore} score, ${projectedTotalScore} total</span>`
       : '';
     const recommendationBadge = recommendLaunch
       ? '<span class="action-badge recommended">Recommended</span>'
