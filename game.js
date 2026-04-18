@@ -152,6 +152,7 @@ const actions = [
 ];
 
 const BEST_SCORE_KEY = "launch-window-best-score";
+const PUBLIC_URL = "https://hellangel1987.github.io/launch-window/";
 
 const state = {};
 
@@ -387,7 +388,8 @@ function getNextRunTip() {
 }
 
 function getShareSummary() {
-  return `I just scored ${state.score} in Launch Window with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that? ${window.location.href}`;
+  const bestCallout = state.lastRunWasNewBest ? " and set a new best" : "";
+  return `I just scored ${state.score} in Launch Window${bestCallout}, with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that? ${PUBLIC_URL}`;
 }
 
 async function updateShareButtonLabel() {
@@ -410,8 +412,8 @@ async function copyRunSummary() {
     if (navigator.share) {
       await navigator.share({
         title: "Launch Window",
-        text: `I just scored ${state.score} in Launch Window with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that?`,
-        url: window.location.href,
+        text: `I just scored ${state.score} in Launch Window${state.lastRunWasNewBest ? " and set a new best" : ""}, with ${state.users} users across ${state.launches} launch${state.launches === 1 ? "" : "es"}. Can you beat that?`,
+        url: PUBLIC_URL,
       });
       els.shareHint.textContent = "Run summary shared. See if anyone can beat your score.";
       return;
