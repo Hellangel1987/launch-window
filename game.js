@@ -466,6 +466,11 @@ function finishGame(title, text) {
     ? `${restartHint} Share it while the market is still hot.`
     : `${restartHint} Share your run if you want a rematch.`;
   els.gameOverCard.classList.remove("hidden");
+  if (typeof els.gameOverCard.scrollIntoView === "function") {
+    requestAnimationFrame(() => {
+      els.gameOverCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
   updateShareButtonLabel();
 }
 
