@@ -359,12 +359,14 @@ function getShareSummary() {
 }
 
 async function updateShareButtonLabel() {
+  const labelPrefix = state.over && state.score > 0 ? (state.score >= state.bestScore ? "best run" : "run summary") : "run summary";
+
   if (navigator.share) {
-    els.copySummaryBtn.textContent = "Share run summary";
+    els.copySummaryBtn.textContent = `Share ${labelPrefix}`;
     return;
   }
 
-  els.copySummaryBtn.textContent = "Copy run summary";
+  els.copySummaryBtn.textContent = `Copy ${labelPrefix}`;
 }
 
 async function copyRunSummary() {
@@ -426,8 +428,11 @@ function finishGame(title, text) {
     `<span class="tag">Cash left: ${formatCash(state.cash)}</span>`,
     `<span class="tag">Launches: ${state.launches}</span>`,
   ].join("");
-  els.shareHint.textContent = restartHint;
+  els.shareHint.textContent = isNewBest
+    ? `${restartHint} Share it while the market is still hot.`
+    : `${restartHint} Share your run if you want a rematch.`;
   els.gameOverCard.classList.remove("hidden");
+  updateShareButtonLabel();
 }
 
 function onAction(actionKey) {
