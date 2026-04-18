@@ -172,6 +172,7 @@ const els = {
   buildBar: document.getElementById("buildBar"),
   readinessBox: document.getElementById("readinessBox"),
   daysLeftCard: document.getElementById("daysLeftStat").closest(".stat"),
+  launchNowCard: document.getElementById("launchNowStat").closest(".stat"),
   mainActions: document.getElementById("mainActions"),
   trendPill: document.getElementById("trendPill"),
   trendText: document.getElementById("trendText"),
@@ -693,6 +694,7 @@ function render() {
   els.copySummaryBtn.disabled = !state.over;
   const daysLeft = Math.max(0, state.maxDays - state.day);
   const isClosingWindow = daysLeft <= 2 && !state.over;
+  const isLaunchUrgent = (isClosingWindow || state.cash <= 2) && !state.over;
   els.dayStat.textContent = `${state.day} / ${state.maxDays}`;
   els.daysLeftStat.textContent = daysLeft;
   els.cashStat.textContent = formatCash(state.cash);
@@ -714,6 +716,7 @@ function render() {
   els.readinessBox.innerHTML = getReadinessText();
   els.readinessBox.classList.toggle("urgent", isClosingWindow);
   els.daysLeftCard?.classList.toggle("urgent", isClosingWindow);
+  els.launchNowCard?.classList.toggle("urgent", isLaunchUrgent);
   renderProduct();
   renderActions();
 }
