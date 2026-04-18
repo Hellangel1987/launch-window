@@ -446,6 +446,7 @@ function finishGame(title, text) {
   const previousBest = getBestScore();
   state.bestScore = setBestScore(state.score);
   render();
+  els.copySummaryBtn.disabled = false;
   const summary = getEndingSummary();
   els.gameOverTitle.textContent = title;
   els.gameOverText.textContent = `${text} ${summary.note}`;
@@ -660,6 +661,7 @@ function handleKeyboardShortcuts(event) {
 }
 
 function render() {
+  els.copySummaryBtn.disabled = !state.over;
   els.dayStat.textContent = `${state.day} / ${state.maxDays}`;
   els.daysLeftStat.textContent = Math.max(0, state.maxDays - state.day);
   els.cashStat.textContent = formatCash(state.cash);
