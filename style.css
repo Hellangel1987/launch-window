@@ -32,6 +32,13 @@ button {
   transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
 }
 button:hover, button:focus-visible { background: rgba(255,255,255,0.14); transform: translateY(-1px); }
+button:focus-visible {
+  outline: 3px solid rgba(124, 156, 255, 0.72);
+  outline-offset: 3px;
+}
+button:active {
+  transform: translateY(0);
+}
 button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 button.primary {
   background: linear-gradient(135deg, var(--accent), #a175ff);
