@@ -584,8 +584,14 @@ function getMarketTemperatureLabel() {
   return "Cold market";
 }
 
+function isFinalDay() {
+  return state.day >= state.maxDays;
+}
+
 function isActionDisabled(action) {
-  return state.over || state.cash < action.cost || (action.key === "discount" && state.discount);
+  if (state.over) return true;
+  if (isFinalDay() && action.key !== "launch") return true;
+  return state.cash < action.cost || (action.key === "discount" && state.discount);
 }
 
 function shouldRecommendLaunch(projection, daysLeft) {
@@ -615,18 +621,23 @@ function renderActions() {
     const launchBuildNote = launchBuildGap > 0
       ? `Needs about ${launchBuildGap} more build for a clean launch.`
       : "Build target reached. Extra setup is optional.";
+    const isLastDayLock = isFinalDay() && action.key !== "launch";
     const desc = action.key === "launch"
       ? `${launchTimingNote ? `${launchTimingNote} ` : ""}${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score. ${launchBuildNote}`
+      : isLastDayLock
+        ? "Last day. Setup moves are closed, so this run lives or dies on the launch."
+        : isDiscountActive
+          ? "Already active. Founder pricing is live for this run."
+          : isCashLocked
+            ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
+            : action.desc;
+    const costBadge = isLastDayLock
+      ? '<span class="action-badge locked">Last day lock</span>'
       : isDiscountActive
-        ? "Already active. Founder pricing is live for this run."
+        ? '<span class="action-badge launch">Active pricing</span>'
         : isCashLocked
-          ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
-          : action.desc;
-    const costBadge = isDiscountActive
-      ? '<span class="action-badge launch">Active pricing</span>'
-      : isCashLocked
-        ? `<span class="action-badge locked">Need $${action.cost}k</span>`
-        : `<span class="action-badge cost">${action.cost === 0 ? 'Free move' : `Costs $${action.cost}k`}</span>`;
+          ? `<span class="action-badge locked">Need $${action.cost}k</span>`
+          : `<span class="action-badge cost">${action.cost === 0 ? 'Free move' : `Costs $${action.cost}k`}</span>`;
     const projectionBadge = action.key === "launch"
       ? `<span class="action-badge launch">Now: ${projection.expectedScore} score</span>`
       : '';
