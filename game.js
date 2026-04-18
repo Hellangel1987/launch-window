@@ -483,20 +483,43 @@ function renderActions() {
   els.mainActions.innerHTML = "";
   const projection = getLaunchProjection(state);
 
-  actions.forEach((action) => {
+  actions.forEach((action, index) => {
     const btn = document.createElement("button");
     btn.className = `action-btn ${action.type}`;
     const isCashLocked = state.cash < action.cost;
+    const shortcut = index + 1;
     const desc = action.key === "launch"
       ? `${projection.verdict}. About ${projection.expectedUsers} users and ${projection.expectedScore} score.`
       : isCashLocked
         ? `Needs $${action.cost}k runway. Launch now or protect your cash.`
         : action.desc;
-    btn.innerHTML = `<strong>${action.title}</strong><small>${desc}</small>`;
+    btn.innerHTML = `<strong>${action.title} <span aria-hidden="true">(${shortcut})</span></strong><small>${desc}</small>`;
+    btn.setAttribute("aria-keyshortcuts", String(shortcut));
     btn.disabled = state.over || isCashLocked;
     btn.addEventListener("click", () => onAction(action.key));
     els.mainActions.appendChild(btn);
   });
+}
+
+function handleKeyboardShortcuts(event) {
+  if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+
+  const target = event.target;
+  const tagName = target?.tagName;
+  if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT" || target?.isContentEditable) return;
+
+  if ((event.key === "n" || event.key === "N") && !state.over) {
+    initGame();
+    return;
+  }
+
+  const actionIndex = Number(event.key) - 1;
+  if (!Number.isInteger(actionIndex) || actionIndex < 0 || actionIndex >= actions.length) return;
+
+  const action = actions[actionIndex];
+  if (!action || state.over || state.cash < action.cost) return;
+
+  onAction(action.key);
 }
 
 function render() {
@@ -522,5 +545,6 @@ function render() {
 els.newRunBtn.addEventListener("click", initGame);
 els.playAgainBtn.addEventListener("click", initGame);
 els.copySummaryBtn.addEventListener("click", copyRunSummary);
+document.addEventListener("keydown", handleKeyboardShortcuts);
 
 initGame();
